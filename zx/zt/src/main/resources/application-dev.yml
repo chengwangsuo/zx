@@ -1,0 +1,61 @@
+server:
+  port: 8081
+  servlet:
+    encoding:
+      charset: utf-8
+    context-path: /zt
+spring:
+  application:
+    name: zt
+  cloud:
+    nacos:
+      discovery:
+        server-addr: slave2:8848 #Nacos服务注册中心地址
+      config:
+        server-addr: slave2:8848
+        enabled: false
+    sentinel:
+      transport:
+        #dashboard: localhost:9999 #配置Sentinel dashboard地址
+        port: 8719
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/converter?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 1
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  #  mapper文件
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  #  实体类
+  type-aliases-package: com.zx.hoperun.zt.entity
+logging:
+  config: classpath:log4j2.xml
+management:
+  endpoint:
+    sentinel:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+feign:
+  sentinel:
+    enabled: true # 激活Sentinel对Feign的支持
+rocketmq:
+  name-server: rocketmq-nameserver1:9876
+  #生产者
+  producer:
+    #生产者组名，规定在一个应用里面必须唯一
+    group: group1
+    #消息发送的超时时间 默认3000ms
+    send-message-timeout: 3000
+    #消息达到4096字节的时候，消息就会被压缩。默认 4096
+    compress-message-body-threshold: 4096
+    #最大的消息限制，默认为128K
+    max-message-size: 4194304
+    #同步消息发送失败重试次数
+    retry-times-when-send-failed: 3
+    #在内部发送失败时是否重试其他代理，这个参数在有多个broker时才生效
+    retry-next-server: true
+    #异步消息发送失败重试的次数
+    retry-times-when-send-async-failed: 3

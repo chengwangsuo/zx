@@ -1,0 +1,42 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /tc
+spring:
+  application:
+    name: tc
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 137.168.117.57:8848 #Nacos服务注册中心地址
+      config:
+        server-addr: 137.168.117.57:8848
+        enabled: true
+    sentinel:
+      transport:
+        #dashboard: localhost:9999 #配置Sentinel dashboard地址
+        port: 8719
+  datasource:
+    url: jdbc:mysql://137.168.117.57:3306/ccvs?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 666666
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  #  mapper文件
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  #  实体类
+  type-aliases-package: com.zx.hoperun.tc.entity
+logging:
+  config: classpath:log4j2.xml
+management:
+  endpoint:
+    sentinel:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+feign:
+  sentinel:
+    enabled: true # 激活Sentinel对Feign的支持

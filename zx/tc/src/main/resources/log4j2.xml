@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration status="info">
+    <Properties>
+        <!-- 声明日志文件存储的目录 -->
+        <Property name="LOG_HOME">D:/log/</Property>
+        <Property name="LOG_PATTERN"
+                  value="%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread][%class{36}:%line] - %msg%n"></Property>
+    </Properties>
+    <Appenders>
+        <!--输出控制台的配置-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- 输出日志的格式-->
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+        <!-- ERROR级别日志 -->
+        <RollingFile name="infoAppender" fileName="${LOG_HOME}/info.log"
+                     filePattern="${LOG_HOME}/%d{yyyy-MM}/%d{yyyy-MM-dd}_info.log">
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="30">
+                <Delete basePath="${LOG_HOME}" maxDepth="2">
+                    <IfFileName glob="*.log" />
+                    <!--!Note: 这里的age必须和filePattern协调, 后者是精确到dd, 这里就要写成xd, xD就不起作用
+                    另外, 数字最好>2, 否则可能造成删除的时候, 最近的文件还处于被占用状态,导致删除不成功!-->
+                    <!--7天-->
+                    <IfLastModified age="2d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+        <!-- ERROR级别日志 -->
+        <RollingFile name="errorAppender" fileName="${LOG_HOME}/error.log"
+                     filePattern="${LOG_HOME}/%d{yyyy-MM}/%d{yyyy-MM-dd}_error.log">
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="30">
+                <Delete basePath="${LOG_HOME}" maxDepth="2">
+                    <IfFileName glob="*.log" />
+                    <!--!Note: 这里的age必须和filePattern协调, 后者是精确到dd, 这里就要写成xd, xD就不起作用
+                    另外, 数字最好>2, 否则可能造成删除的时候, 最近的文件还处于被占用状态,导致删除不成功!-->
+                    <!--7天-->
+                    <IfLastModified age="2d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="infoAppender"/>
+            <AppenderRef ref="errorAppender"/>
+        </Root>
+    </Loggers>
+</configuration>
